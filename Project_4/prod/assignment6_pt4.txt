@@ -1,0 +1,82 @@
+1) Worst-case time complexity of makeEmpty(BinaryNode*& t)
+
+    <-- Code Start -->
+
+        void BET::makeEmpty(BinaryNode*& t) {
+            if (t != nullptr) {
+                makeEmpty(t->left); // recursively clears left and right subtrees
+                makeEmpty(t->right);
+                t = nullptr; 
+                delete t;  // deletes node
+            }
+        }
+
+    <-- Code End -->
+    
+    Response: This function has an O(1) process time for checking if the current node is a nullptr and deleting the current node.
+    This function recursively calls this function for every node that is not null. Let there be n nodes in the tree
+    that are not null. Then, then function has a worst-case time complexity of O(1 * n) = O(n).
+
+2) Worse-case time complexity of postfix to infix conversion
+
+    <-- Code Start -->
+
+        // prints infix expression of tree
+        void BET::printInfixExpression(BinaryNode* n) {
+            if (n == nullptr) 
+                return;
+
+            if (getPrecedence(n->data) == 0) { // if the node is an operand, print the data
+                std::cout << n->data;
+                return;
+            }
+            std::string currentOperator = n->data; // store current operator
+            int currentPrecedence = getPrecedence(currentOperator);
+
+            if (n->left != nullptr) { // print left subtree, if it exists
+                bool needParenthesis = false;
+                if (getPrecedence(n->left->data) == 1 || getPrecedence(n->left->data) == 2) { // if an operator
+                    int leftPrecedence = getPrecedence(n->left->data);
+                    if (leftPrecedence < currentPrecedence ||
+                    (leftPrecedence == currentPrecedence && getPrecedence(currentOperator) == 0)) {
+                        needParenthesis = true;
+                    }
+                }
+                if (needParenthesis) std::cout << "(";
+                printInfixExpression(n->left);
+                if (needParenthesis) std::cout << ")";
+            }
+            
+            std::cout << " " << currentOperator << " ";
+
+            if (n->right != nullptr) { // print right subtree, if it exists
+                bool needParenthesis = false;
+                if (getPrecedence(n->right->data) == 1 ||getPrecedence(n->right->data) == 2) { // if an operator
+                    int rightPrecedence = getPrecedence(n->right->data);
+                    if (rightPrecedence < currentPrecedence ||
+                    (rightPrecedence == currentPrecedence && getPrecedence(currentOperator) != 0)) {
+                        needParenthesis = true;
+                    }
+                }
+                if (needParenthesis) std::cout << "(";
+                printInfixExpression(n->right);
+                if (needParenthesis) std::cout << ")";
+            }
+        }
+
+        // returns whether a token is an operator
+        int BET::getPrecedence(const std::string& token) const {
+            if (token == "*" || token == "/") return 2; // * or / are precedence 2
+            if (token == "+" || token == "-") return 1; // + or - are precedence 1
+            else { return 0;} // operands are precedence 0
+        }
+
+    <-- Code End -->
+
+    Response: The worst-case time complexity of printInfixExpression is O(n), where n is the number of nodes in the binary
+    operator tree that are not equal to the nullptr. This is due to the fact that the function visits each node exactly once,
+    and while at each node, only performs constant time O(1) operations. Each call to getPrecedence is a constant-time call,
+    so it does not increase the worst-case time complexity beyond O(n). Therefore, the worst-case time complexity is O(n)
+    for the conversion from postfix to infix.
+
+

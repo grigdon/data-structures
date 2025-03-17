@@ -1,0 +1,13 @@
+1) Analyzing the worst-case time complexity of the member function clear() of Stack. 
+
+The function clear() of Stack calls the clear function of the private data member named "stack". This stack variable is an STL double-ended queue data structure.
+Calling the clear function of a deque iterates over the n nodes in the deque and deletes (erases) the current node. Erasing an individual node is a constant operation, but the 
+number of calls to clear a node depends on the size of the deque. Thus, this will be an O(n) operation.
+
+2) Analyzing the worst-case time complexity of the function you developed to evaluate a postfix arithmetic expression.
+
+The function "evaluatePostfixExpression" calls "isNumericalInput" for each m-sized string in the vector inputPostfixVector. Each n-sized string is checked to see whether it contains
+variable identifiers (letters or underscores). This is repeated for each of the n strings in the vector. This first loop has time complexity O(n * m). The next loop contains several 
+constant-time operations regarding classifying string inputs, declaring doubles, and stack operations. When a main loop cycle requires a mathematical operation (when entering the 
+case statement) there are two calls to stoi and one call to to_string. Each of these are assumed to operate according to the input string length, which we will define as k. 
+Thus the time complexity of the main loop is O(n * k). So the worst-case time complexity of the entire function is O(n * m + n * k). Let c = max(m, k), then O = (n * c).

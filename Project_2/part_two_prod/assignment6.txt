@@ -1,0 +1,73 @@
+1) Copy of the reverse function: 
+
+	template <typename T>
+	void List<T>::reverse() {
+
+	// check if the list is either empty or if size == 1
+    	if (empty() || head == tail) return;
+    
+ 	Node* current = head;
+    	Node* temp = nullptr;
+
+    	// swap the head and tail 
+    	tail = head;
+
+    	// reverse each element 
+    	while (current != nullptr) {
+        	temp = current->prev;
+        	current->prev = current->next;
+        	current->next = temp;
+        	current = current->prev;
+    	}
+
+    	// adjust the last pointer missed by the loop
+    	head = temp->prev;
+	}
+
+The input validation, node initialization, and node finalization occur exactly once, so these three operations will have a worst-case time complexity of O(1).
+The while-loop will iterate through the list and reassign pointer values exactly once per node. If we have a list of size n, then the worst-case is O(n)
+
+The overall worst-case time complexity is O(1) + O(1) + O(n) + O(1) = O(n + 3)
+So, the time complexity of the list reverse function is O(n).
+
+
+
+2) Copy of the release_mem function: 
+
+	bool MyMemory::release_mem(int ind, int len) {
+
+    	if(ind > 0 && ind < max_index && len > 0 && len < block_size) {
+
+        	// case where the desired index exists in the list
+
+        	for (auto it = mlist.begin(); it != mlist.end(); ++it) {
+            		if (it->get_index() == ind) {
+                		it->free_mem(len);
+                		return true;
+            		}
+        	}
+
+        	// case where the desired index does not exist in the list
+
+        	MyMemoryBlock newBlock(ind, len);
+        	for (auto it = mlist.begin(); it != mlist.end(); ++it) {
+            		if (it->get_index() > ind) {
+                		mlist.insert(it, newBlock);
+                		return true;
+            		}
+        	}
+
+        	mlist.push_back(newBlock);
+        	return true;
+    	}
+
+    	return false;
+	}
+
+Similarly, the input validation, and push_back implemenation both operate in constant time.
+But, the worst-case operation of checking if the desired index exists in the list requires looping through the entire n-sized list. 
+Similarly, the operation of checking where the newBlock should be inserted in the condition that the exact index is not found
+requires looping through the entire n-sized List.
+
+The overall worst-case time complexity of this algorithm is O(1) + O(n) + O(n) + O(1) = O(2n + 2)
+So, the time complexity of the list reverse function is O(n).

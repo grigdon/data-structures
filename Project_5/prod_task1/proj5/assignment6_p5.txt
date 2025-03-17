@@ -1,0 +1,54 @@
+1) Analyze the worst-case time complexity of the private member function rehash() of HashTable. 
+
+    template <typename K, typename V>
+    void HashTable<K, V>::rehash() {
+        auto oldTable = table;
+        numBuckets = prime_below(2 * numBuckets);
+        table.resize(numBuckets);
+        for (auto& chain : table) {
+            chain.clear();
+        }
+        numPairs = 0;
+        for (const auto& chain : oldTable) {
+            for (const auto& kv : chain) {
+                insert(kv);
+            }
+        }
+    }
+
+
+    Response: 
+
+    Performing the shallow copy in the line "auto oldTable = table" is performed at O(n) time, where n is the number of buckets 
+    in the original hashtable. In "numBuckets = prime_below(2 * numBuckets); table.resize(numBuckets);," calling prime_below and table.resize(...)
+    are both O(1) operations. The first for-loop is an O(n) operation, where n is the number of buckets in the original hashtable.
+    Finally, the nested for-loop at the end of the function loops exactly the number of pairs in the hashtable. Let the 
+    number of pairs in the hashtable be k. The worst-case time complexity of this function is O(k).
+
+2) Analyze the worst-case time complexity of the member function removeUser(const string & k) of PassServer.
+
+    bool PassServer::removeUser(const std::string & k) {
+        return adaptedTable->remove(k);
+    }
+
+    template <typename K, typename V>
+    bool HashTable<K, V>::remove(const K& k) {
+        size_t index = myHash(k);
+        auto& chain = table[index];
+        for (auto it = chain.begin(); it != chain.end(); ++it) {
+            if (it->first == k) {
+                chain.erase(it);
+                --numPairs;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Response:
+
+    The function begins with an O(1) call to the adaptee's member function called remove. There are two O(1) operations consisting
+    of the first two lines of the function, followed by a for-loop over the selected bucket's pairs. Assuming an ideal hash function, 
+    the time to find the element in the bucket including deletion and modification of numPairs should be an O(1) operation. So, for most
+    applications, this call will be close to O(1) time. If the hash function is underperforming, i.e., there are too many pairs in each bucket, 
+    then this function could take up to O(n) time, where n is the number of pairs in the bucket.
